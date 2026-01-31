@@ -39,6 +39,7 @@ npm run start:dev
 #Prisma + MySQL
 npm install prisma @prisma/client
 npx prisma init
+npx prisma generate
 
 #JWT Auth + Security
 npm install @nestjs/jwt passport-jwt passport
@@ -54,3 +55,5 @@ npm install cloudinary multer-storage-cloudinary
 #Swagger API
 npm install @nestjs/swagger swagger-ui-express
 ```
+
+npm install class-validator class-transformer
