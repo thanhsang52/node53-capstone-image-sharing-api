@@ -43,6 +43,9 @@ npx prisma generate
 
 #JWT Auth + Security
 npm install @nestjs/jwt passport-jwt passport
+npm install @nestjs/passport passport passport-jwt
+npm install -D @types/passport-jwt
+
 npm install bcrypt
 npm install -D @types/bcrypt
 
@@ -57,3 +60,9 @@ npm install @nestjs/swagger swagger-ui-express
 ```
 
 npm install class-validator class-transformer
+
+## Auth
+
+- JWT Authentication
+- Passport Strategy
+- Protected routes with JwtAuthGuard

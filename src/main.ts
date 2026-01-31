@@ -9,7 +9,7 @@ async function bootstrap() {
     .setTitle('API Documentation')
     .setDescription('NestJS Auth API (JWT + Prisma)')
     .setVersion('1.0')
-    .addBearerAuth() // 👈 dùng cho JWT
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
