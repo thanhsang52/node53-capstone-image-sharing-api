@@ -22,4 +22,25 @@ export class UserService {
 
     return user;
   }
+
+  async getSavedImages(userId: number) {
+    return this.prisma.savedImage.findMany({
+        where: { userId },
+        include: {
+        image: {
+            include: {
+            user: {
+                select: { id: true, email: true },
+            },
+            },
+        },
+        },
+    });
+  }
+
+  async getImagesCreatedByUser(userId: number) {
+    return this.prisma.image.findMany({
+        where: { userId },
+    });
+ }
 }
