@@ -52,6 +52,7 @@ export default function Header() {
         <nav className="nav">
           {user ? (
             <div className="user-menu">
+              <a href="/manage" className="manage-link">Quản lý ảnh</a>
               <span className="welcome">Xin chào, {user.fullName || user.email}</span>
               <button onClick={handleLogout} className="logout-btn">
                 Đăng xuất

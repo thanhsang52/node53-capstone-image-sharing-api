@@ -33,6 +33,20 @@
     gap: 16px;
 }
 
+.manage-link {
+    background: #28a745;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.manage-link:hover {
+    background: #218838;
+}
+
 .welcome {
     color: #666;
     font-size: 14px;

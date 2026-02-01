@@ -216,15 +216,7 @@ export class ImageService {
 
             if (!image) {
                 // Tạo image record mới nếu chưa có
-                const cloudinaryUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_NAME}/image/upload/${publicId}`;
-                
-                image = await this.prisma.image.create({
-                    data: {
-                        title: publicId,
-                        url: cloudinaryUrl,
-                        userId: userId // Sử dụng userId của người dùng hiện tại
-                    }
-                });
+                image = await this.createImageFromPublicId(publicId, userId);
             }
 
             return this.toggleSaveImage(image.id, userId);
@@ -232,6 +224,26 @@ export class ImageService {
             console.error('Error in toggleSaveImageByPublicId:', error);
             throw error;
         }
+    }
+
+    async createImageFromPublicId(publicId: string, userId: number) {
+        const cloudinaryUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_NAME}/image/upload/${publicId}`;
+        
+        return this.prisma.image.create({
+            data: {
+                title: publicId,
+                url: cloudinaryUrl,
+                userId: userId
+            },
+            include: {
+                user: {
+                    select: { id: true, email: true, fullName: true }
+                },
+                _count: {
+                    select: { comments: true, saved: true }
+                }
+            }
+        });
     }
 
 }

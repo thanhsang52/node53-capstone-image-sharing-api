@@ -30,7 +30,7 @@ export class UserService {
         image: {
             include: {
             user: {
-                select: { id: true, email: true },
+                select: { id: true, email: true, fullName: true },
             },
             },
         },

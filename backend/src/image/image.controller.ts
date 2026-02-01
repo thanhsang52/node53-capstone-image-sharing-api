@@ -52,10 +52,16 @@ export class ImageController {
         if (/^\d+$/.test(id)) {
             return this.imageService.addComment(+id, req.user.userId, content);
         } else {
-            // Tìm image từ publicId rồi lấy ID
+            // Tìm hoặc tạo image từ publicId rồi lấy ID
             const publicId = decodeURIComponent(id);
-            const image = await this.imageService.getImageByPublicId(publicId);
-            return this.imageService.addComment(image.id, req.user.userId, content);
+            try {
+                const image = await this.imageService.getImageByPublicId(publicId);
+                return this.imageService.addComment(image.id, req.user.userId, content);
+            } catch (error) {
+                // Nếu không tìm thấy, tạo image record mới
+                const newImage = await this.imageService.createImageFromPublicId(publicId, req.user.userId);
+                return this.imageService.addComment(newImage.id, req.user.userId, content);
+            }
         }
     }
 
