@@ -86,6 +86,31 @@ export class ImageService {
         return image;
     }
 
+    async getImageByPublicId(publicId: string) {
+        const image = await this.prisma.image.findFirst({
+            where: {
+                OR: [
+                    { url: { contains: publicId } },
+                    { title: publicId }
+                ]
+            },
+            include: {
+                user: {
+                    select: { id: true, email: true, fullName: true }
+                },
+                _count: {
+                    select: { comments: true, saved: true }
+                }
+            }
+        });
+
+        if (!image) {
+            throw new NotFoundException('Image not found');
+        }
+
+        return image;
+    }
+
     async getImageComments(imageId: number) {
         if (!imageId || isNaN(imageId)) {
             throw new NotFoundException('Invalid image ID');
@@ -100,6 +125,23 @@ export class ImageService {
             },
             orderBy: { createdAt: 'desc' }
         });
+    }
+
+    async getImageCommentsByPublicId(publicId: string) {
+        const image = await this.prisma.image.findFirst({
+            where: {
+                OR: [
+                    { url: { contains: publicId } },
+                    { title: publicId }
+                ]
+            }
+        });
+
+        if (!image) {
+            return []; // Trả về mảng rỗng nếu không tìm thấy ảnh
+        }
+
+        return this.getImageComments(image.id);
     }
 
     async checkImageSaved(imageId: number, userId: number) {

@@ -20,13 +20,23 @@ export class ImageController {
     // GET /image/:id
     @Get(':id')
     getImageById(@Param('id') id: string) {
-        return this.imageService.getImageById(+id);
+        // Kiểm tra nếu là số thì dùng imageId, nếu không thì dùng publicId
+        if (/^\d+$/.test(id)) {
+            return this.imageService.getImageById(+id);
+        } else {
+            return this.imageService.getImageByPublicId(decodeURIComponent(id));
+        }
     }
 
     // GET /image/:id/comments
     @Get(':id/comments')
     getImageComments(@Param('id') id: string) {
-        return this.imageService.getImageComments(+id);
+        // Kiểm tra nếu là số thì dùng imageId, nếu không thì dùng publicId
+        if (/^\d+$/.test(id)) {
+            return this.imageService.getImageComments(+id);
+        } else {
+            return this.imageService.getImageCommentsByPublicId(decodeURIComponent(id));
+        }
     }
 
     // POST /image/:id/comments
