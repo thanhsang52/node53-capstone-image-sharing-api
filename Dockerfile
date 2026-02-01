@@ -8,7 +8,7 @@ COPY backend/package*.json ./
 COPY backend/prisma ./prisma/
 
 # Install dependencies
-RUN npm install --production=false
+RUN npm install
 
 # Copy source code from backend directory
 COPY backend/ .
