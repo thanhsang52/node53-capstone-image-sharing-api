@@ -1,13 +1,13 @@
 # Backend API Dockerfile
-FROM node:20
+FROM node:20-slim
 
 WORKDIR /app
 
 # Copy package files from backend directory
 COPY backend/package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies with npm ci for faster, reliable builds
+RUN npm ci --only=production=false --silent
 
 # Copy source code from backend directory
 COPY backend/ .
