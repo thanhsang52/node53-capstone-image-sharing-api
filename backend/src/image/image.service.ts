@@ -158,7 +158,7 @@ export class ImageService {
     async addComment(imageId: number, userId: number, content: string) {
         // Kiểm tra ảnh có tồn tại không
         const image = await this.prisma.image.findUnique({
-            where: { id: imageId }
+            where: { id: Number(imageId) }
         });
 
         if (!image) {
@@ -168,8 +168,8 @@ export class ImageService {
         return this.prisma.comment.create({
             data: {
                 content,
-                userId,
-                imageId
+                userId: Number(userId),
+                imageId: Number(imageId)
             },
             include: {
                 user: {

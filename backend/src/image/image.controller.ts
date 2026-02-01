@@ -43,12 +43,20 @@ export class ImageController {
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @Post(':id/comments')
-    addComment(
+    async addComment(
         @Param('id') id: string,
         @Body('content') content: string,
         @Req() req
     ) {
-        return this.imageService.addComment(+id, req.user.userId, content);
+        // Kiểm tra nếu là số thì dùng imageId, nếu không thì tìm imageId từ publicId
+        if (/^\d+$/.test(id)) {
+            return this.imageService.addComment(+id, req.user.userId, content);
+        } else {
+            // Tìm image từ publicId rồi lấy ID
+            const publicId = decodeURIComponent(id);
+            const image = await this.imageService.getImageByPublicId(publicId);
+            return this.imageService.addComment(image.id, req.user.userId, content);
+        }
     }
 
     // POST /image/:id/save
