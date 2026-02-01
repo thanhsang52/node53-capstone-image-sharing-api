@@ -45,7 +45,7 @@ services:
     environment:
       NEXT_PUBLIC_BACKEND_URL: http://node53-capstone-image.sangshare.cloud:3069
     ports:
-      - "3000:3000"
+      - "3008:3000"
     depends_on:
       - backend
     networks:
