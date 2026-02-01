@@ -1,24 +1,75 @@
-import { Controller, Delete, Get, Param, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ImageService } from './image.service';
 
+@ApiTags('Image')
 @Controller('image')
 export class ImageController {
     constructor(private imageService: ImageService) {}
+    
+    // GET /image
+    @Get()
+    getImages(@Query('search') search?: string) {
+        if (search) {
+            return this.imageService.searchImages(search);
+        }
+        return this.imageService.getAllImages();
+    }
 
+    // GET /image/:id
+    @Get(':id')
+    getImageById(@Param('id') id: string) {
+        return this.imageService.getImageById(+id);
+    }
+
+    // GET /image/:id/comments
+    @Get(':id/comments')
+    getImageComments(@Param('id') id: string) {
+        return this.imageService.getImageComments(+id);
+    }
+
+    // POST /image/:id/comments
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @Post(':id/comments')
+    addComment(
+        @Param('id') id: string,
+        @Body('content') content: string,
+        @Req() req
+    ) {
+        return this.imageService.addComment(+id, req.user.userId, content);
+    }
+
+    // POST /image/:id/save
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @Post(':id/save')
+    toggleSaveImage(@Param('id') id: string, @Req() req) {
+        // Kiểm tra nếu là số thì dùng imageId, nếu không thì dùng publicId
+        if (/^\d+$/.test(id)) {
+            return this.imageService.toggleSaveImage(+id, req.user.userId);
+        } else {
+            return this.imageService.toggleSaveImageByPublicId(decodeURIComponent(id), req.user.userId);
+        }
+    }
+
+    // GET /image/:id/saved-status
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @Get(':id/saved-status')
+    checkImageSaved(@Param('id') id: string, @Req() req) {
+        return this.imageService.checkImageSaved(+id, req.user.userId);
+    }
+
+    // DELETE /image/:id
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @Delete(':id')
     deleteImage(
-    @Param('id') id: string,
-    @Req() req
+        @Param('id') id: string,
+        @Req() req
     ) {
-    return this.imageService.deleteImage(+id, req.user.userId);
-    }
-
-    @Get()
-    getImages() {
-        return this.imageService.getAllImages();
+        return this.imageService.deleteImage(+id, req.user.userId);
     }
 }
