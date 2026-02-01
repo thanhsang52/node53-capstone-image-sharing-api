@@ -1,11 +1,10 @@
 # Backend API Dockerfile
-FROM node:20-alpine
+FROM node:20
 
 WORKDIR /app
 
 # Copy package files from backend directory
 COPY backend/package*.json ./
-COPY backend/prisma ./prisma/
 
 # Install dependencies
 RUN npm install
@@ -16,11 +15,8 @@ COPY backend/ .
 # Generate Prisma client
 RUN npx prisma generate
 
-# Build the application
-RUN npm run build
-
 # Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "run", "start:prod"]
+# Start script with migration
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run start:dev"]
