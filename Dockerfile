@@ -3,15 +3,15 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-COPY prisma ./prisma/
+# Copy package files from backend directory
+COPY backend/package*.json ./
+COPY backend/prisma ./prisma/
 
 # Install dependencies
 RUN npm ci
 
-# Copy source code
-COPY . .
+# Copy source code from backend directory
+COPY backend/ .
 
 # Generate Prisma client
 RUN npx prisma generate
